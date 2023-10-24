@@ -1,9 +1,9 @@
 include:
   - project: 'iiidevops-templates/ci-template'
-    ref: 'v2.1.1'
+    ref: 'v2.1.5'
     file: 'ci/template.gitlab-ci.yml'
   - project: 'iiidevops-templates/ci-template'
-    ref: 'v2.1.1'
+    ref: 'v2.1.5'
     file: 'job/DeployDatabase.gitlab-ci.yml'
 
 stages:
@@ -51,6 +51,7 @@ Deploy--Wait DB deployment:
 Build image:
   variables:
     iiidevops: deployed-environments
+    DOCKERFILE_PATH: Dockerfile
   only:
     - skip
 
