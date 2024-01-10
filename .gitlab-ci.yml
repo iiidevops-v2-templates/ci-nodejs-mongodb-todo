@@ -1,9 +1,9 @@
 include:
   - project: 'iiidevops-templates/ci-template'
-    ref: 'v2.1.5'
+    ref: 'v2.4.2'
     file: 'ci/template.gitlab-ci.yml'
   - project: 'iiidevops-templates/ci-template'
-    ref: 'v2.1.5'
+    ref: 'v2.4.2'
     file: 'job/DeployDatabase.gitlab-ci.yml'
 
 stages:
@@ -35,9 +35,7 @@ Deploy--Database:
     CHART_DB_PASSWORD: "DevOps_123"
     CHART_DB_TAG: "4.4-debian-10"
     CHART_DB_TYPE: "mongodb"
-    CHART_NFS_ENABLED: "false"
-    CHART_NFS_SERVER_IP: "10.20.0.100"
-    CHART_VERSION: "0.4.1"
+    CHART_VOLUME_ENABLED: 'false'
   only:
     - skip
 
@@ -78,6 +76,8 @@ Deploy--Web:
     CHART_DB_USERNAME: "iiidevops"
     CHART_DB_PASSWORD: "DevOps_123"
     CHART_DB_SERVER: "${CI_PROJECT_NAME}-${CI_COMMIT_BRANCH}-db"
+    CHART_VOLUME_ENABLED: 'false'
+    CHART_VOLUME_PATH: "/usr/src"
   needs:
     - "Deploy--Wait DB deployment"
   only:
