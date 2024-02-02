@@ -30,7 +30,6 @@ squash-commits:
     - git reset --soft "${SECOND_TAG}"
 
     - |
-      rm common.yaml value.yaml
       cp iiidevops/.gitlab-ci.yml.tmp .gitlab-ci.yml 
       git add -A
       git commit -m "chore: squash commits between ${SECOND_TAG} and ${PREVIOUS_TAG}"
