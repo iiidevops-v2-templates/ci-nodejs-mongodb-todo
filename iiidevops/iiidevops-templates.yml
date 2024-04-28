@@ -5,6 +5,7 @@ stages:
 - deploy
 - test
 - publish
+- userjobs
 
 include:
 - local: '.gitlab-ci.yml'
@@ -30,7 +31,6 @@ squash-commits:
     - git reset --soft "${SECOND_TAG}"
 
     - |
-      cp iiidevops/.gitlab-ci.yml.tmp .gitlab-ci.yml 
       git add -A
       git commit -m "chore: squash commits between ${SECOND_TAG} and ${PREVIOUS_TAG}"
       git tag -a "${PREVIOUS_TAG}" -m "chore: release ${PREVIOUS_TAG}" --force

@@ -1,35 +1,36 @@
 include:
 - project: iiidevops-templates/ci-template
-  ref: v2.6.0
+  ref: v2.8.0
   file: ci/template.gitlab-ci.yml
 - project: iiidevops-templates/ci-template
-  ref: v2.6.0
+  ref: v2.8.0
   file: job/DeployDatabase.gitlab-ci.yml
+- local: iiidevops/jobs/*.yml
+
 stages:
 - initial
 - scan
 - build
 - deploy
 - test
+- userjobs
+
 Test--SonarQube source code scan:
   variables:
     iiidevops: sonarqube
     CHART_TYPE: normal
-  only:
-  - master
+  
 Test--Anchore SBOM source code scan:
   variables:
     iiidevops: anchore-code
-  only:
-  - skip
+  
 Test--Checkmarx source code scan:
   variables:
     iiidevops: checkmarx
-  only:
-  - skip
+  
 Deploy--Database:
   variables:
-    iiidevops: deployed-environments
+    iiidevops: deploy-db
     CHART_DB_GUI: 'true'
     CHART_DB_NAME: todo_db
     CHART_DB_USERNAME: iiidevops
@@ -37,35 +38,30 @@ Deploy--Database:
     CHART_DB_TAG: 4.4-debian-10
     CHART_DB_TYPE: mongodb
     CHART_VOLUME_ENABLED: 'false'
-  only:
-  - skip
+  
 Deploy--Wait DB deployment:
   variables:
-    iiidevops: deployed-environments
+    iiidevops: deploy-db
     max_wait: 128
-  only:
-  - skip
+  
 Build image:
   variables:
-    iiidevops: deployed-environments
+    iiidevops: build
     DOCKERFILE_PATH: Dockerfile
-  only:
-  - skip
+  
 Build--Scan docker image:
   variables:
-    iiidevops: deployed-environments
-  only:
-  - skip
+    iiidevops: build
+  
 Deploy--Set environment and wait deployment:
   variables:
-    iiidevops: deployed-environments
+    iiidevops: deploy
   needs:
   - Deploy--Wait DB deployment
-  only:
-  - skip
+  
 Deploy--Web:
   variables:
-    iiidevops: deployed-environments
+    iiidevops: deploy
     CHART_WEB_PORT: 8080
     CHART_PROXY_BODY_SIZE: 1m
     CHART_DB_NAME: todo_db
@@ -76,33 +72,27 @@ Deploy--Web:
     CHART_VOLUME_PATH: /usr/src
   needs:
   - Deploy--Wait DB deployment
-  only:
-  - skip
+  
 Test--Anchore SBOM:
   variables:
     iiidevops: anchore
-  only:
-  - skip
+  
 Test--ZAP:
   variables:
     iiidevops: zap
     CHART_WEB_PORT: 8080
-  only:
-  - skip
+  
 Test--WebInspect:
   variables:
     iiidevops: webinspect
-  only:
-  - skip
+  
 Test--Postman:
   variables:
     iiidevops: postman
     CHART_WEB_PORT: 8080
-  only:
-  - skip
+  
 Test--Sideex:
   variables:
     iiidevops: sideex
     CHART_WEB_PORT: 8080
-  only:
-  - skip
+  
